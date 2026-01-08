@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,12 @@
     <meta name="description" content="Assess your role as a GPAI Provider or Deployer under the EU AI Act.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="background-blobs">
         <div class="blob blob-1"></div>
@@ -25,20 +29,42 @@
 
         <section id="welcome-screen" class="glass-card active">
             <h2>Determine Your Regulatory Status</h2>
-            <p>This assessment helps you identify if your organization acts as a <strong>Provider</strong> or <strong>Deployer</strong> for General-Purpose AI models under the EU AI Act.</p>
+            <p>This assessment helps you identify if your organization acts as a <strong>Provider</strong> or
+                <strong>Deployer</strong> for General-Purpose AI models under the EU AI Act.</p>
             <div class="info-badges">
                 <span class="badge">Compliance Ready</span>
                 <span class="badge">2024 Framework</span>
                 <span class="badge">Privacy First</span>
             </div>
-            <button id="start-btn" class="primary-btn">Start Assessment</button>
+
+            <div class="expertise-selector">
+                <h3>Select Your AI Expertise Level</h3>
+                <p class="expertise-desc">Choose the assessment that matches your technical background</p>
+                <div class="expertise-buttons">
+                    <button class="expertise-btn" data-level="beginner">
+                        <span class="level-icon">📚</span>
+                        <span class="level-title">Beginner</span>
+                        <span class="level-desc">New to AI • 50 clear questions</span>
+                    </button>
+                    <button class="expertise-btn" data-level="intermediate">
+                        <span class="level-icon">⚙️</span>
+                        <span class="level-title">Intermediate</span>
+                        <span class="level-desc">Technical but learning AI • 40 questions</span>
+                    </button>
+                    <button class="expertise-btn" data-level="expert">
+                        <span class="level-icon">🎯</span>
+                        <span class="level-title">Expert</span>
+                        <span class="level-desc">Deep AI knowledge • 40 advanced questions</span>
+                    </button>
+                </div>
+            </div>
         </section>
 
         <section id="assessment-well" class="glass-card hidden">
             <div class="progress-container">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
-            
+
             <div id="question-container" class="fade-in">
                 <h3 id="question-text">Loading question...</h3>
                 <p id="question-desc" class="description"></p>
@@ -70,4 +96,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>
