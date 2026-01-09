@@ -158,18 +158,26 @@ document.querySelectorAll('.expertise-btn').forEach(btn => {
     });
 });
 
-// Tooltip toggle
+// Tooltip hover behavior
 const helpIcon = document.getElementById('help-icon');
 const tooltip = document.getElementById('tooltip');
-let tooltipVisible = false;
 
-helpIcon.addEventListener('click', () => {
-    tooltipVisible = !tooltipVisible;
-    if (tooltipVisible) {
-        tooltip.classList.add('visible');
-    } else {
-        tooltip.classList.remove('visible');
-    }
+helpIcon.addEventListener('mouseenter', () => {
+    tooltip.classList.add('visible');
+});
+
+helpIcon.addEventListener('mouseleave', () => {
+    tooltip.classList.remove('visible');
+});
+
+// Also hide tooltip when mouse leaves the tooltip itself
+tooltip.addEventListener('mouseleave', () => {
+    tooltip.classList.remove('visible');
+});
+
+// Keep tooltip visible when hovering over it
+tooltip.addEventListener('mouseenter', () => {
+    tooltip.classList.add('visible');
 });
 
 document.getElementById('restart-btn').addEventListener('click', () => location.reload());
@@ -202,7 +210,6 @@ function showQuestion() {
 
     // Reset tooltip visibility
     tooltip.classList.remove('visible');
-    tooltipVisible = false;
 
     // Update Progress
     const progress = (currentQuestionIndex / questions.length) * 100;

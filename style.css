@@ -342,6 +342,7 @@ h1 {
 
 /* Question Header with Help Icon */
 .question-header {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -373,28 +374,38 @@ h1 {
 
 /* Tooltip */
 .tooltip {
-    position: relative;
-    max-width: 500px;
-    margin: 0 auto 1.5rem;
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    transform: translateX(0);
+    max-width: 450px;
+    width: max-content;
+    margin-bottom: 0.5rem;
     opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 100;
+    pointer-events: none;
 }
 
 .tooltip.visible {
     opacity: 1;
-    max-height: 400px;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .tooltip-content {
-    background: rgba(0, 210, 255, 0.1);
+    background: rgba(0, 210, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--accent);
     border-left: 3px solid var(--accent);
     padding: 1rem;
     border-radius: 8px;
     font-size: 0.85rem;
     line-height: 1.6;
     text-align: left;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .tooltip-content strong {
