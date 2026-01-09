@@ -82,6 +82,45 @@ const technicalQuestions = [
     { id: 'q40', text: "Do you maintain logs for at least six months?", desc: "Ensuring traceability of operational usage.", yes: 'deployer', no: 'provider' }
 ];
 
+// Context mapping for questions
+const questionContext = {
+    // Maker Logic (Provider Triggers)
+    'b1': '<strong>Core Development</strong><br>If you control the weights, architecture, or source code, you are the Provider. You own the technical debt and the safety risks.',
+    'b2': '<strong>Custom Hire</strong><br>Hiring a third party to build a "bespoke" model for your brand usually makes you the Provider because you are placing it on the market under your name.',
+    'b4': '<strong>Branding & White-labeling</strong><br>Under Article 25, putting your trademark on a third-party AI makes you the "de facto" Provider. The user sees your brand; the law sees your liability.',
+    'b6': '<strong>Substantial Modifications</strong><br>If you change the "intended purpose" or disable safety filters, you have "substantially modified" the system. You are now legally the new Provider.',
+    'b10': '<strong>Branding & White-labeling</strong><br>Re-selling a third-party tool as your own makes you the Provider under EU AI Act Article 25.',
+    'b12': '<strong>Core Development</strong><br>Access to the "guts" of the AI (source code, model weights) is a Provider trait.',
+    'b16': '<strong>Substantial Modifications</strong><br>Breaking the "manual" (vendor instructions) makes you the new maker.',
+    'b34': '<strong>Substantial Modifications</strong><br>Removing safety guards makes you the Provider.',
+    'q2': '<strong>Core Development</strong><br>If you control the weights, architecture, or source code, you are the Provider.',
+    'q4': '<strong>Branding & White-labeling</strong><br>Your trademark = Your legal responsibility for safety.',
+    'q7': '<strong>Core Development</strong><br>Technical control over the model\'s internals makes you the Provider.',
+    'q9': '<strong>Substantial Modifications</strong><br>Code-level changes that affect performance/safety move you to Provider status.',
+    'q39': '<strong>Branding & White-labeling</strong><br>Being the only name on the Terms of Service signals Provider responsibility.',
+
+    // User Logic (Deployer Triggers)
+    'b3': '<strong>Standard SaaS Usage</strong><br>Using a finished product (like ChatGPT) keeps you a Deployer. Your job is to follow the "Instructions for Use."',
+    'b5': '<strong>RAG & Prompting</strong><br>Giving the AI "homework" doesn\'t make you the teacher. This is operational use.',
+    'b9': '<strong>RAG & Prompting</strong><br>Operational control (prompts, settings) keeps you a Deployer.',
+    'b11': '<strong>Human-in-the-loop</strong><br>Oversight is the #1 duty of a Deployer. You must ensure humans can override AI decisions.',
+    'b15': '<strong>Standard SaaS Usage</strong><br>Subscription = Deployment in most cases.',
+    'b25': '<strong>RAG & Prompting</strong><br>RAG (Retrieval-Augmented Generation) is the "Safe Zone" for technical leads. You\'re still a Deployer.',
+    'b33': '<strong>Human-in-the-loop</strong><br>This is the core requirement for Deployers.',
+    'q14': '<strong>Standard SaaS Usage</strong><br>Standard integration of an existing tool keeps you as a Deployer.',
+    'q21': '<strong>RAG & Prompting</strong><br>Connecting your database without altering model weights is considered "operational use."',
+    'q31': '<strong>Human-in-the-loop</strong><br>You must ensure competent personnel can interpret and override the AI\'s output.',
+
+    // High-Risk Scenarios
+    'b7': '<strong>High-Risk: Employment & HR</strong><br>Using AI for hiring/firing is "High-Risk." You must perform a Fundamental Rights Impact Assessment (FRIA).',
+    'b13': '<strong>High-Risk: Financial Services</strong><br>Credit scoring triggers strict transparency and logging requirements for Deployers.',
+    'b20': '<strong>High-Risk: Financial Services</strong><br>Personalized pricing requires Deployer oversight and transparency.',
+    'b28': '<strong>High-Risk: Biometric</strong><br>Very high risk; triggers massive Deployer duties.',
+    'b30': '<strong>High-Risk: Employment & HR</strong><br>Workplace AI is a High-Risk Deployer scenario.',
+    'q25': '<strong>High-Risk: Employment & HR</strong><br>Employee monitoring triggers enhanced Deployer obligations.',
+    'q28': '<strong>High-Risk: Financial Services</strong><br>Setting fraud-detection thresholds is still Deployer activity, but with strict logging.'
+};
+
 let questions = [];
 let currentQuestionIndex = 0;
 let answers = {};
@@ -119,6 +158,20 @@ document.querySelectorAll('.expertise-btn').forEach(btn => {
     });
 });
 
+// Tooltip toggle
+const helpIcon = document.getElementById('help-icon');
+const tooltip = document.getElementById('tooltip');
+let tooltipVisible = false;
+
+helpIcon.addEventListener('click', () => {
+    tooltipVisible = !tooltipVisible;
+    if (tooltipVisible) {
+        tooltip.classList.add('visible');
+    } else {
+        tooltip.classList.remove('visible');
+    }
+});
+
 document.getElementById('restart-btn').addEventListener('click', () => location.reload());
 document.querySelectorAll('.choice-btn').forEach(btn => {
     btn.addEventListener('click', (e) => handleAnswer(e.target.dataset.answer === 'yes'));
@@ -136,6 +189,20 @@ function showQuestion() {
     questionText.innerText = q.text;
     questionDesc.innerText = q.desc;
     qCounter.innerText = `QUESTION ${currentQuestionIndex + 1} OF ${questions.length}`;
+
+    // Update tooltip content
+    const tooltipContent = document.getElementById('tooltip-content');
+    if (questionContext[q.id]) {
+        tooltipContent.innerHTML = questionContext[q.id];
+        helpIcon.style.display = 'inline-flex';
+    } else {
+        tooltipContent.innerHTML = '<strong>No additional context available</strong>';
+        helpIcon.style.display = 'none';
+    }
+
+    // Reset tooltip visibility
+    tooltip.classList.remove('visible');
+    tooltipVisible = false;
 
     // Update Progress
     const progress = (currentQuestionIndex / questions.length) * 100;

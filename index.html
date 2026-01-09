@@ -62,7 +62,13 @@
             </div>
 
             <div id="question-container" class="fade-in">
-                <h3 id="question-text">Loading question...</h3>
+                <div class="question-header">
+                    <h3 id="question-text">Loading question...</h3>
+                    <span class="help-icon" id="help-icon">?</span>
+                </div>
+                <div class="tooltip" id="tooltip">
+                    <div class="tooltip-content" id="tooltip-content"></div>
+                </div>
                 <p id="question-desc" class="description"></p>
                 <div class="action-buttons">
                     <button class="choice-btn" data-answer="yes">Yes</button>
