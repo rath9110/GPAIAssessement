@@ -135,14 +135,7 @@ const questionDesc = document.getElementById('question-desc');
 const progressBar = document.getElementById('progress-bar');
 const roleTitle = document.getElementById('role-title');
 const resultDetails = document.getElementById('result-details');
-
-// Add Question Counter to UI if it doesn't exist
-const qCounter = document.createElement('p');
-qCounter.id = 'q-counter';
-qCounter.style.marginBottom = '0.5rem';
-qCounter.style.fontSize = '0.8rem';
-qCounter.style.opacity = '0.5';
-questionText.parentNode.insertBefore(qCounter, questionText);
+const qCounter = document.getElementById('question-counter');
 
 // Event Listeners
 const backBtn = document.getElementById('back-btn');
