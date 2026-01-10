@@ -145,9 +145,19 @@ qCounter.style.opacity = '0.5';
 questionText.parentNode.insertBefore(qCounter, questionText);
 
 // Event Listeners
+const backBtn = document.getElementById('back-btn');
+let questionHistory = [];
+
+// Event Listeners
 document.querySelectorAll('.expertise-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const level = e.currentTarget.dataset.level;
+        // If switching levels, clear previous progress or ask confirmation
+        if (localStorage.getItem('gpai_progress') && JSON.parse(localStorage.getItem('gpai_progress')).level !== level) {
+            if (!confirm("Start a new assessment? This will overwrite your previous saved progress.")) return;
+            localStorage.removeItem('gpai_progress');
+        }
+
         selectedLevel = level;
         if (level === 'beginner') {
             questions = beginnerQuestions;
@@ -180,15 +190,24 @@ tooltip.addEventListener('mouseenter', () => {
     tooltip.classList.add('visible');
 });
 
-document.getElementById('restart-btn').addEventListener('click', () => location.reload());
+document.getElementById('restart-btn').addEventListener('click', () => {
+    localStorage.removeItem('gpai_progress');
+    location.reload();
+});
+
 document.querySelectorAll('.choice-btn').forEach(btn => {
     btn.addEventListener('click', (e) => handleAnswer(e.target.dataset.answer === 'yes'));
 });
 document.getElementById('copy-btn').addEventListener('click', copyResults);
+backBtn.addEventListener('click', goBack);
 
 function startAssessment() {
     welcomeScreen.classList.add('hidden');
     assessmentWell.classList.remove('hidden');
+
+    // Try to load progress
+    loadProgress();
+
     showQuestion();
 }
 
@@ -214,13 +233,25 @@ function showQuestion() {
     // Update Progress
     const progress = (currentQuestionIndex / questions.length) * 100;
     progressBar.style.width = `${progress}%`;
+
+    // Manage Back Button visibility
+    if (questionHistory.length > 0) {
+        backBtn.classList.remove('hidden');
+    } else {
+        backBtn.classList.add('hidden');
+    }
 }
 
 function handleAnswer(answer) {
     const q = questions[currentQuestionIndex];
     answers[q.id] = answer;
 
+    // Push current index to history
+    questionHistory.push(currentQuestionIndex);
+
     currentQuestionIndex++;
+
+    saveProgress();
 
     if (currentQuestionIndex < questions.length) {
         showQuestion();
@@ -229,10 +260,48 @@ function handleAnswer(answer) {
     }
 }
 
+function goBack() {
+    if (questionHistory.length === 0) return;
+
+    // Pop the previous question index
+    currentQuestionIndex = questionHistory.pop();
+
+    // Remove the answer for the question we're going back to (optional, but cleaner)
+    // answers[questions[currentQuestionIndex].id] = undefined; 
+
+    saveProgress();
+    showQuestion();
+}
+
+function saveProgress() {
+    const progress = {
+        level: selectedLevel,
+        currentQuestionIndex: currentQuestionIndex,
+        answers: answers,
+        history: questionHistory
+    };
+    localStorage.setItem('gpai_progress', JSON.stringify(progress));
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem('gpai_progress');
+    if (saved) {
+        const progress = JSON.parse(saved);
+        if (progress.level === selectedLevel) {
+            currentQuestionIndex = progress.currentQuestionIndex;
+            answers = progress.answers || {};
+            questionHistory = progress.history || [];
+        }
+    }
+}
+
 function calculateResults() {
     assessmentWell.classList.add('hidden');
     resultScreen.classList.remove('hidden');
     progressBar.style.width = `100%`;
+
+    // Clear progress on completion
+    localStorage.removeItem('gpai_progress');
 
     let providerScore = 0;
     let deployerScore = 0;
